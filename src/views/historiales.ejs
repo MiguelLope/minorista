@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historial de Movimientos</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Fondo semitransparente para el formulario de filtros */
+    .row.mb-3 {
+      background-color: rgba(255, 255, 255, 0.8); /* Blanco semitransparente */
+      padding: 15px;
+      border-radius: 5px;
+    }
+
+    /* Fondo semitransparente para la tabla */
+    .table {
+      background-color: rgba(255, 255, 255, 0.8); /* Blanco semitransparente */
+    }
+
+    /* Estilo para el cuerpo del documento */
+    body {
+      background-image: url("https://www.diariodexalapa.com.mx/incoming/4epnvc-obra-materiales.jpg/ALTERNATES/LANDSCAPE_1140/Obra%20MATERIALES.JPG");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: #000; /* Color de texto negro para legibilidad */
+    }
+
+    /* Color negro para los textos en los campos de entrada */
+    form input, form select {
+      color: #000;
+    }
+
+    table thead th, table tbody td {
+      color: #000; /* Texto negro para los encabezados y filas de la tabla */
+    }
+
+    /* Responsividad para pantallas pequeñas */
+    @media (max-width: 768px) {
+      h1, h3 {
+        font-size: 1.5rem;
+      }
+
+      .table {
+        font-size: 0.9rem;
+      }
+
+      .mb-3, .btn {
+        font-size: 0.85rem;
+      }
+    }
+
+    /* Ajustes para tablas en pantallas más pequeñas */
+    .table-responsive {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+  </style>
+
+</head>
+<body>
+  <%- include('./partials/navbar.ejs') %>
+
+  <div class="container mt-4">
+    <h1>Historial de Movimientos</h1>
+
+    <!-- Filtros -->
+    <div class="row mb-3">
+      <div class="col-lg-3 col-md-6 mb-2">
+        <select id="filter-movement" class="form-select">
+          <option value="">Todos los Movimientos</option>
+          <option value="Venta">Venta</option>
+          <option value="Compra">Compra</option>
+        </select>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-2">
+        <input type="date" id="filter-date-from" class="form-control" placeholder="Desde">
+      </div>
+      <div class="col-lg-3 col-md-6 mb-2">
+        <input type="date" id="filter-date-to" class="form-control" placeholder="Hasta">
+      </div>
+      <div class="col-lg-3 col-md-6 mb-2">
+        <input type="text" id="filter-search" class="form-control" placeholder="Buscar producto">
+      </div>
+    </div>
+
+    <!-- Botón para generar el PDF -->
+    <div class="mb-3">
+      <button id="download-pdf" class="btn btn-primary w-100">Generar PDF</button>
+    </div>
+
+    <!-- Tabla de Historial -->
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Tipo de Movimiento</th>
+            <th>Fecha</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="historial-tbody">
+          <!-- Los resultados filtrados se mostrarán aquí -->
+          <% historial.forEach(item => { %>
+          <tr>
+            <td><%= item.id %></td>
+            <td><%= item.producto %></td>
+            <td><%= item.cantidad %></td>
+            <td><%= item.t_movimiento %></td>
+            <td><%= new Date(item.fecha).toLocaleString() %></td>
+            <td><%= item.total.toFixed(2) %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- jsPDF Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- AJAX Script + PDF generation -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Añadir eventos de cambio a los filtros
+      document.querySelectorAll('#filter-movement, #filter-date-from, #filter-date-to, #filter-search').forEach(filter => {
+        filter.addEventListener('change', applyFilters);
+      });
+
+      // Función para aplicar filtros en tiempo real
+      async function applyFilters() {
+        const movement = document.getElementById('filter-movement').value;
+        const dateFrom = document.getElementById('filter-date-from').value;
+        const dateTo = document.getElementById('filter-date-to').value;
+        const search = document.getElementById('filter-search').value;
+
+        // Enviar los filtros al servidor mediante AJAX
+        const response = await fetch(`/historiales/filtrar?movement=${movement}&dateFrom=${dateFrom}&dateTo=${dateTo}&search=${search}`);
+        const data = await response.json();
+
+        // Actualizar la tabla con los datos filtrados
+        const tbody = document.getElementById('historial-tbody');
+        tbody.innerHTML = ''; // Limpiar la tabla
+
+        data.forEach(item => {
+          const row = `<tr>
+            <td>${item.id}</td>
+            <td>${item.producto}</td>
+            <td>${item.cantidad}</td>
+            <td>${item.t_movimiento}</td>
+            <td>${new Date(item.fecha).toLocaleString()}</td>
+            <td>${item.total.toFixed(2)}</td>
+          </tr>`;
+          tbody.innerHTML += row;
+        });
+      }
+
+      // Función para generar PDF usando jsPDF
+      document.getElementById('download-pdf').addEventListener('click', () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Título del reporte
+        doc.setFontSize(18);
+        doc.text('Historial de Movimientos', 14, 20);
+
+        // Extraer información de la tabla
+        let rows = [];
+        document.querySelectorAll('#historial-tbody tr').forEach(tr => {
+          let row = [];
+          tr.querySelectorAll('td').forEach(td => row.push(td.innerText));
+          rows.push(row);
+        });
+
+        // Añadir la tabla al PDF
+        doc.autoTable({
+          head: [['ID', 'Producto', 'Cantidad', 'Tipo de Movimiento', 'Fecha', 'Total']],
+          body: rows,
+          startY: 30
+        });
+
+        // Descargar el PDF
+        doc.save('historial_movimientos.pdf');
+      });
+    });
+  </script>
+
+  <!-- jsPDF AutoTable plugin (para manejar tablas en PDF) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</body>
+</html>

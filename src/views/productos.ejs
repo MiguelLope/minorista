@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Productos</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body {
+      background-image: url("https://img.freepik.com/foto-gratis/lay-flat-escritorio-arquitecto-telefono_23-2148269858.jpg?t=st=1725911056~exp=1725914656~hmac=304f1cbc69923f11bf58cefc0282f76efa0ab33aee4dab7232b1ec39d039eabe&w=826");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: #f8f9fa;
+    }
+
+    .container {
+      flex: 1;
+      padding: 20px;
+    }
+
+    .page-title {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .filter-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .filter-section {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .filter-section .form-control {
+      margin-bottom: 10px;
+      color: #212529;
+    }
+
+    .add-product-btn {
+      margin-top: 10px;
+      display: block;
+      width: 100%;
+    }
+
+    .modal-content {
+      color: #212529;
+    }
+
+    .product-card img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    footer {
+      background-color: #343a40;
+      color: #ffffff;
+      padding: 20px 0;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include('./partials/navbar.ejs') %>
+
+    <!-- Contenedor principal -->
+    <div class="container">
+      <!-- Título de la página -->
+      <div class="page-title">
+        <h1>Lista de Productos</h1>
+      </div>
+
+      <!-- Contenedor del botón -->
+      <div class="filter-container">
+        <div class="filter-section">
+          <input type="text" class="form-control" placeholder="Buscar productos..." id="searchInput" />
+          <button class="btn btn-info add-product-btn" data-bs-toggle="modal" data-bs-target="#addProductModal"
+            id="addProductBtn">
+            Agregar
+          </button>
+        </div>
+      </div>
+
+      <div class="product-section">
+        <div class="row" id="productList">
+          <% productos.forEach(function(producto) { %>
+
+            <div class="col-md-4 product-card mb-4" data-id="<%= producto.id_producto %>">
+              <div class="card text-bg-light border-secondary shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title text-primary">
+                    <%= producto.nombre %>
+                  </h5>
+                  <p class="card-text">
+                    <%= producto.descripcion %>
+                  </p>
+                  <div class="d-flex justify-content-between mb-2">
+                    <p class="card-text">
+                      <strong>Costo: $<%= producto.costo_unitario %></strong>
+                    </p>
+                    <p class="card-text">
+                      <strong>Venta: $<%= producto.precio_unitario %></strong>
+                    </p>
+                  </div>
+                  <p class="card-text">
+                    <strong>Stock: <%= producto.stock %> unidades</strong>
+                  </p>
+                  <div class="d-flex justify-content-between">
+                    <a href="#" class="btn btn-warning flex-grow-1 me-2 edit-product"
+                      data-id="<%= producto.id_producto %>" data-bs-toggle="modal"
+                      data-bs-target="#editProductModal">Editar</a>
+                    <a href="#" class="btn btn-danger flex-grow-1 delete-product"
+                      data-id="<%= producto.id_producto %>">Eliminar</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <% }); %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para agregar productos -->
+    <%- include('./partials/formularioAdd.ejs') %> <%- include('./partials/formularioEdit.ejs') %>
+
+        <footer>
+          <div class="container">
+            <p>&copy; 2024 MiSitio. Todos los derechos reservados.</p>
+          </div>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+          // Espera a que el DOM esté completamente cargado
+          document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("searchInput");
+            const productList = document.getElementById("productList");
+            const productCards = productList.getElementsByClassName("product-card");
+
+            // Agrega el evento input para la búsqueda
+            searchInput.addEventListener("input", function () {
+              const searchTerm = searchInput.value.toLowerCase();
+
+              // Recorre todas las tarjetas de productos
+              Array.from(productCards).forEach(function (card) {
+                const productName = card
+                  .querySelector(".card-title")
+                  .textContent.toLowerCase();
+
+                // Muestra u oculta la tarjeta según si coincide con el término de búsqueda
+                if (productName.includes(searchTerm)) {
+                  card.style.display = ""; // Mostrar
+                } else {
+                  card.style.display = "none"; // Ocultar
+                }
+              });
+            });
+
+            // Manejo de eventos para los botones de editar
+            document.querySelectorAll(".edit-product").forEach(function (button) {
+              button.addEventListener("click", function (event) {
+                event.preventDefault();
+
+                const productId = this.getAttribute("data-id");
+                const productCard = document.querySelector(
+                  `.product-card[data-id="${productId}"]`
+                );
+
+                // Extraer la información del producto desde la tarjeta
+                const productName = productCard.querySelector(".card-title").textContent.trim();
+                const productDescription = productCard.querySelector("p.card-text").textContent.trim();
+                const productCost = productCard
+                  .querySelectorAll(".card-text")[1]
+                  .textContent.split("$")[1].trim();
+                const productPrice = productCard
+                  .querySelectorAll(".card-text")[2]
+                  .textContent.split("$")[1].trim();
+                const productStock = productCard
+                  .querySelectorAll(".card-text")[3]
+                  .textContent.split(" ")[1].trim(); // Extraer solo el número de unidades del stock
+
+                // Llenar los campos del formulario de edición
+                document.getElementById("editProductId").value = productId;
+                document.getElementById("editProductName").value = productName;
+                document.getElementById("editProductDescription").value = productDescription;
+                document.getElementById("editProductCost").value = productCost;
+                document.getElementById("editProductPrice").value = productPrice;
+                document.getElementById("editProductStock").value = productStock;
+
+                // Mostrar el modal de edición
+                const editProductModal = new bootstrap.Modal(
+                  document.getElementById("editProductModal")
+                );
+                editProductModal.show();
+              });
+
+              // Reseteo del scroll y backdrop al cerrar el modal
+              const editProductModalElement = document.getElementById("editProductModal");
+              editProductModalElement.addEventListener("hidden.bs.modal", function () {
+                document.body.style.overflow = "auto";
+                document.querySelectorAll(".modal-backdrop").forEach(function (backdrop) {
+                  backdrop.remove();
+                });
+              });
+            });
+            document.querySelectorAll(".delete-product").forEach(function (button) {
+              button.addEventListener("click", function (event) {
+                event.preventDefault();
+                const productId = this.getAttribute("data-id");
+
+                // Confirmación antes de eliminar
+                if (
+                  confirm("¿Estás seguro de que deseas eliminar este producto?")
+                ) {
+                  fetch(`/productos/delete/${productId}`, {
+                    method: "DELETE",
+                  })
+                    .then((response) => response.json())
+                    .then((result) => { })
+                    .catch((error) => {
+                      console.error("Error al eliminar el producto:", error);
+                    });
+
+                  window.location.reload(); // Actualiza la página para reflejar los cambios
+                }
+                window.location.reload(); // Actualiza la página para reflejar los cambios
+              });
+            });
+          });
+        </script>
+</body>
+
+</html>

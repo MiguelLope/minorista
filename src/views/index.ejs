@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inicio</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Estilos personalizados */
+    .hero {
+      background: url('https://7651628.fs1.hubspotusercontent-na1.net/hubfs/7651628/como-se-si-mi-provedor-de-materiales-de-construcci%C3%B3n-es-de-confianza.png') center/cover no-repeat;
+      color: white;
+      padding: 100px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.7); /* Oscurecer imagen de fondo */
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      z-index: 1;
+      position: relative;
+    }
+
+    .hero p {
+      font-size: 1.5rem;
+      z-index: 1;
+      position: relative;
+    }
+
+    .hero .btn {
+      z-index: 1;
+      position: relative;
+      margin-top: 20px;
+      font-size: 1.2rem;
+      padding: 10px 30px;
+    }
+
+    .card {
+      border: none;
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.05); /* Efecto hover para ampliar la tarjeta */
+    }
+
+    .about-section {
+      padding: 60px 0;
+      text-align: center;
+      background-color: #f8f9fa;
+    }
+
+    .about-section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .about-section p {
+      font-size: 1.2rem;
+      color: #6c757d;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .footer {
+      padding: 20px 0;
+      background-color: #343a40;
+      color: white;
+    }
+
+    .footer a {
+      color: #ffffffcc;
+    }
+
+    .footer a:hover {
+      color: white;
+    }
+
+    /* Media queries para responsividad */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      .hero p {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<%- include('./partials/navbar.ejs') %>
+
+<!-- Hero Section -->
+<div class="hero d-flex flex-column justify-content-center align-items-center">
+  <h1>Bienvenido a Nuestro Sitio de Materiales</h1>
+  <p>"Todo lo que necesitas para levantar grandes ideas."</p>
+  <a href="#" class="btn btn-primary">Empezar Ahora</a>
+</div>
+
+<!-- About Us Section -->
+<section class="about-section">
+  <h2>Acerca de Nosotros</h2>
+  <p>
+    En <strong>Materiales AD</strong>, nos dedicamos a proporcionar materiales de construcción de la más alta calidad a profesionales de la construcción y al público en general. Con años de experiencia en la industria, trabajamos estrechamente con los mejores proveedores para ofrecerte productos duraderos, confiables y a precios competitivos.
+    Nuestro compromiso es ayudarte a construir proyectos que se mantendrán en pie por generaciones, ofreciendo un servicio excepcional y soluciones personalizadas para cada necesidad.
+  </p>
+  <p>
+    Creemos en el poder de la construcción para cambiar el mundo y estamos aquí para proporcionarte los recursos que necesitas para lograrlo. ¡Confía en nosotros para ser tu socio en cada proyecto!
+  </p>
+</section>
+
+<!-- Footer -->
+<footer class="footer text-center">
+  <div class="container">
+    <p>&copy; 2024 MiSitio. Todos los derechos reservados.</p>
+    <a href="#">Política de Privacidad</a> | 
+    <a href="#">Términos de Servicio</a>
+  </div>
+</footer>
+
+<!-- Bootstrap JS (for responsive behavior) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

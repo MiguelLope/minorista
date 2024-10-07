@@ -1,0 +1,36 @@
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title" id="addProductModalLabel">Agregar Producto</h5>
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+       </div>
+       <div class="modal-body">
+         <form id="addProductForm" action="productos/add" method="post">
+           <input type="hidden" id="productId">
+           <div class="mb-2">
+             <label for="productName" class="form-label">Nombre del Producto</label>
+             <input type="text" class="form-control form-control-sm" name="productName" id="productName" required>
+           </div>
+           <div class="mb-2">
+             <label for="productDescription" class="form-label">Descripción</label>
+             <textarea class="form-control form-control-sm" name="productDescription" id="productDescription" rows="2" required></textarea>
+           </div>
+           <div class="mb-2">
+             <label for="productCost" class="form-label">Costo Unitario</label>
+             <input type="number" class="form-control form-control-sm" name="productCost" id="productCost" min="0" required>
+           </div>
+           <div class="mb-2">
+             <label for="productPrice" class="form-label">Precio de Venta</label>
+             <input type="number" class="form-control form-control-sm" id="productPrice" name="productPrice" min="0" required>
+           </div>
+           <div class="mb-2">
+             <label for="productStock" class="form-label">Stock</label>
+             <input type="number" class="form-control form-control-sm" id="productStock" name="productStock" min="0" required>
+           </div>
+           <button type="submit" class="btn btn-primary btn-sm w-100" id="submitProductBtn">Agregar Producto</button>
+         </form>
+       </div>
+     </div>
+   </div>
+</div>
