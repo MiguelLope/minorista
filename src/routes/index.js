@@ -66,20 +66,16 @@ router.get("/historiales", isAuthenticated, async (req, res) => {
   try {
     // Consulta SQL para obtener el historial con el total calculado
     const [rows] = await db.query(
-      "SELECT h.id,"+
-              "p.nombre AS producto,"
-              +"h.cantidad,"
-              +"h.t_movimiento,"
-              +"h.fecha, "
-              +"CASE "
-                +"WHEN h.t_movimiento = 'Venta' THEN h.cantidad * p.precio_unitario "
-                +"WHEN h.t_movimiento = 'Compra' THEN h.cantidad * p.costo_unitario "
-                +"ELSE 0"+
-              "END AS total"+ 
-       "FROM Historial h"+
-       "JOIN Productos p ON h.producto = p.id_producto;"
+      "SELECT h.id, p.nombre AS producto, h.cantidad, h.t_movimiento, h.fecha, " +
+      "CASE " +
+        "WHEN h.t_movimiento = 'Venta' THEN h.cantidad * p.precio_unitario " +
+        "WHEN h.t_movimiento = 'Compra' THEN h.cantidad * p.costo_unitario " +
+        "ELSE 0 " +
+      "END AS total " + 
+      "FROM Historial h " +
+      "JOIN Productos p ON h.producto = p.id_producto;"
     );
-
+    
     // Verificar si los datos obtenidos son un array antes de renderizar
     if (Array.isArray(rows)) {
       // Renderiza la vista de "historiales" con los datos obtenidos
@@ -347,7 +343,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-
 // Ruta para cerrar sesión
 router.get('/logout', (req, res) => {
   // Destruir la sesión
@@ -377,8 +372,6 @@ router.delete('/eliminar/:username', async (req, res) => {
     res.status(500).send('Error al eliminar el usuario');
   }
 });
-
-
 
 // Ruta para mostrar el formulario de edición
 router.get('/editar/:username', async (req, res) => {
