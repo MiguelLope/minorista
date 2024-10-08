@@ -24,7 +24,7 @@ router.get("/historiales/filtrar", isAuthenticated, async (req, res) => {
              "WHEN h.t_movimiento = 'Compra' THEN h.cantidad * p.costo_unitario"+
              "ELSE 0 "+
            "END AS total"+
-    "FROM Historial h"+
+    "FROM historial h"+
     "JOIN Productos p ON h.producto = p.id_producto"+
     "WHERE 1=1"; // 1=1 es para facilitar agregar condiciones dinámicamente
 
@@ -72,7 +72,7 @@ router.get("/historiales", isAuthenticated, async (req, res) => {
         "WHEN h.t_movimiento = 'Compra' THEN h.cantidad * p.costo_unitario " +
         "ELSE 0 " +
       "END AS total " + 
-      "FROM Historial h " +
+      "FROM historial h " +
       "JOIN Productos p ON h.producto = p.id_producto;"
     );
     
