@@ -18,16 +18,15 @@ function isAuthenticated(req, res, next) {
 router.get("/historiales/filtrar", isAuthenticated, async (req, res) => {
   const { movement, dateFrom, dateTo, search } = req.query;
 
-  let query = `
-    SELECT h.id, p.nombre AS producto, h.cantidad, h.t_movimiento, h.fecha, 
-           CASE 
-             WHEN h.t_movimiento = 'Venta' THEN h.cantidad * p.precio_unitario
-             WHEN h.t_movimiento = 'Compra' THEN h.cantidad * p.costo_unitario
-             ELSE 0 
-           END AS total
-    FROM Historial h
-    JOIN Productos p ON h.producto = p.id_producto
-    WHERE 1=1`; // 1=1 es para facilitar agregar condiciones dinámicamente
+  let query = "SELECT h.id, p.nombre AS producto, h.cantidad, h.t_movimiento, h.fecha,"+
+           "CASE"+ 
+             "WHEN h.t_movimiento = 'Venta' THEN h.cantidad * p.precio_unitario"+
+             "WHEN h.t_movimiento = 'Compra' THEN h.cantidad * p.costo_unitario"+
+             "ELSE 0 "+
+           "END AS total"+
+    "FROM Historial h"+
+    "JOIN Productos p ON h.producto = p.id_producto"+
+    "WHERE 1=1"; // 1=1 es para facilitar agregar condiciones dinámicamente
 
   const queryParams = [];
 
