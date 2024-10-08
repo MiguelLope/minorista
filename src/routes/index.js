@@ -25,7 +25,7 @@ router.get("/historiales/filtrar", isAuthenticated, async (req, res) => {
              "ELSE 0 "+
            "END AS total"+
     "FROM historial h"+
-    "JOIN Productos p ON h.producto = p.id_producto"+
+    "JOIN productos p ON h.producto = p.id_producto"+
     "WHERE 1=1"; // 1=1 es para facilitar agregar condiciones dinámicamente
 
   const queryParams = [];
@@ -73,7 +73,7 @@ router.get("/historiales", isAuthenticated, async (req, res) => {
         "ELSE 0 " +
       "END AS total " + 
       "FROM historial h " +
-      "JOIN Productos p ON h.producto = p.id_producto;"
+      "JOIN productos p ON h.producto = p.id_producto;"
     );
     
     // Verificar si los datos obtenidos son un array antes de renderizar
