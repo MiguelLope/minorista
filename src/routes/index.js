@@ -66,18 +66,18 @@ router.get("/historiales", isAuthenticated, async (req, res) => {
   try {
     // Consulta SQL para obtener el historial con el total calculado
     const [rows] = await db.query(
-      `SELECT h.id, 
-              p.nombre AS producto, 
-              h.cantidad, 
-              h.t_movimiento, 
-              h.fecha, 
-              CASE 
-                WHEN h.t_movimiento = 'Venta' THEN h.cantidad * p.precio_unitario 
-                WHEN h.t_movimiento = 'Compra' THEN h.cantidad * p.costo_unitario 
-                ELSE 0 
-              END AS total 
-       FROM Historial h 
-       JOIN Productos p ON h.producto = p.id_producto;`
+      "SELECT h.id,"+
+              "p.nombre AS producto,"
+              +"h.cantidad,"
+              +"h.t_movimiento,"
+              +"h.fecha, "
+              +"CASE "
+                +"WHEN h.t_movimiento = 'Venta' THEN h.cantidad * p.precio_unitario "
+                +"WHEN h.t_movimiento = 'Compra' THEN h.cantidad * p.costo_unitario "
+                +"ELSE 0"+
+              "END AS total"+ 
+       "FROM Historial h"+
+       "JOIN Productos p ON h.producto = p.id_producto;"
     );
 
     // Verificar si los datos obtenidos son un array antes de renderizar
